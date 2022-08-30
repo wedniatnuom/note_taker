@@ -4,7 +4,11 @@ let saveNoteBtn;
 let newNoteBtn;
 let noteList;
 
+
+
+
 if (window.location.pathname === '/notes') {
+  
   noteTitle = document.querySelector('.note-title');
   noteText = document.querySelector('.note-textarea');
   saveNoteBtn = document.querySelector('.save-note');
@@ -52,13 +56,15 @@ const deleteNote = (id) =>
 
 const renderActiveNote = () => {
   hide(saveNoteBtn);
-
+ 
   if (activeNote.id) {
+    console.log("in active note")
     noteTitle.setAttribute('readonly', true);
     noteText.setAttribute('readonly', true);
     noteTitle.value = activeNote.title;
     noteText.value = activeNote.text;
   } else {
+    console.log("no active id")
     noteTitle.removeAttribute('readonly');
     noteText.removeAttribute('readonly');
     noteTitle.value = '';
@@ -67,10 +73,12 @@ const renderActiveNote = () => {
 };
 
 const handleNoteSave = () => {
+  console.log("new note has been saved")
   const newNote = {
     title: noteTitle.value,
     text: noteText.value,
   };
+  console.log(newNote)
   saveNote(newNote).then(() => {
     getAndRenderNotes();
     renderActiveNote();
@@ -118,6 +126,7 @@ const handleRenderSaveBtn = () => {
 
 // Render the list of note titles
 const renderNoteList = async (notes) => {
+  console.log("rendering notes")
   let jsonNotes = await notes.json();
   if (window.location.pathname === '/notes') {
     noteList.forEach((el) => (el.innerHTML = ''));
@@ -181,3 +190,4 @@ if (window.location.pathname === '/notes') {
 }
 
 getAndRenderNotes();
+
