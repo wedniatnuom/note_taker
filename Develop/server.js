@@ -20,12 +20,17 @@ app.get('/notes', (req, res) => {
     res.sendFile(path.join(__dirname, 'public/notes.html'));
 });  
 
+
+
 app.get('/api/notes', (req,res) => {
-    let notes = require('./db/db.json');
-    res.status(200).json(notes);
-    console.log("retrieving notes")
-    console.log(notes);
-});
+    fs.readFile("./db/db.json", 'utf-8', (err, data) => {
+        if (err) {
+          console.log(err)
+          return
+        }
+        res.json(JSON.parse(data))
+      })
+    })
 
 app.get('/api/notes/:id', (req,res) => {
     console.log(req.params.id);
@@ -40,10 +45,7 @@ app.post('/api/notes', (req,res) => {
             text,
             id: uuid(),
         };
-        const response = {
-            status: 'success',
-            body: newNote,
-        };
+
         fs.readFile('./db/db.json', { encoding: 'utf8'}, (err,data) => {
            newData = JSON.parse(data);
            newData.push(newNote);
@@ -53,13 +55,17 @@ app.post('/api/notes', (req,res) => {
                 console.log("error")
             }
             else {
-                console.log("appened to db")
+                const response = {
+                    status: 'success',
+                    body: newData,
+                };
+                res.status(201).json(response);
+                
             }
         })
     })
-        console.log(response);
-        console.log(newNote);
-        res.status(201).json(response);
+
+        
     } else {
         res.status(500).json('Error in creating new note');
     }
